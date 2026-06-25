@@ -26,17 +26,21 @@ NmapEngine is a Python-powered Nmap automation engine that eliminates repetitive
 
 ## 📋 Available Scan Profiles
 
-| # | Scan Type | Description |
-|---|-----------|-------------|
-| 1 | **Ping Scan** | Detect which hosts are online without port scanning (`-sn`) |
-| 2 | **Host Discovery** | Identify live hosts across a network range (`-Pn`) |
-| 3 | **Regular Scan** | Standard port scan across common ports (`-sS`) |
-| 4 | **Quick Scan** | Fast scan of top 100 ports (`--top-ports 100`) |
-| 5 | **Service & Version Detection** | Detect open services and their versions (`-sV`) |
-| 6 | **OS Detection** | Attempt to identify the operating system (`-O`) |
-| 7 | **Aggressive Scan** | Full fingerprinting: OS, version, scripts, traceroute (`-A`) |
-| 8 | **Vulnerability Scan** | Run Nmap NSE vuln scripts (`--script vuln`) |
-| 0 | **Exit** | Quit the program |
+## Available Scan Profiles
+
+| # | Scan Profile            | Description                                                                                            |
+| - | ----------------------- | ------------------------------------------------------------------------------------------------------ |
+| 1 | **Ping Scan**           | Discover live hosts without performing a port scan (`-sn`)                                             |
+| 2 | **Fast Scan**           | Quickly scan the most common ports on the target (`-F`)                                                |
+| 3 | **SYN Stealth Scan**    | Perform a stealthy TCP SYN scan to identify open ports (`-sS`)                                         |
+| 4 | **Service Detection**   | Identify running services and their versions (`-sV`)                                                   |
+| 5 | **OS Detection**        | Attempt to determine the target operating system (`-O`)                                                |
+| 6 | **UDP Scan**            | Scan UDP ports and discover UDP-based services (`-sU`)                                                 |
+| 7 | **Aggressive Scan**     | Comprehensive scan including OS detection, version detection, NSE scripts, and traceroute (`-A`)       |
+| 8 | **Vulnerability Scan**  | Execute Nmap NSE vulnerability scripts against the target (`--script vuln`)                            |
+| 9 | **Web Technology Scan** | Enumerate web technologies, HTTP headers, page titles, and common web resources using NSE HTTP scripts |
+| 0 | **Exit**                | Exit the application                                                                                   |
+
 
 > Scan options may vary based on your version. Run the tool to see the full live menu.
 
@@ -45,33 +49,49 @@ NmapEngine is a Python-powered Nmap automation engine that eliminates repetitive
 ## 🚀 Demo
 
 ```
-============================================================
-        NmapEngine - Nmap Automation Engine
-============================================================
+███████╗███╗   ███╗ █████╗ ██████╗    ███████╗███╗   ██╗ ██████╗ ██╗███╗   ██╗███████╗
+████╗  ██║████╗ ████║██╔══██╗██╔══██╗   ██╔════╝████╗  ██║██╔════╝ ██║████╗  ██║██╔════╝
+██╔██╗ ██║██╔████╔██║███████║██████╔╝   █████╗  ██╔██╗ ██║██║  ███╗██║██╔██╗ ██║█████╗
+██║╚██╗██║██║╚██╔╝██║██╔══██║██╔═══╝    ██╔══╝  ██║╚██╗██║██║   ██║██║██║╚██╗██║██╔══╝
+██║ ╚████║██║ ╚═╝ ██║██║  ██║██║        ███████╗██║ ╚████║╚██████╔╝██║██║ ╚████║███████╗
+╚═╝  ╚═══╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝        ╚══════╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝╚═╝  ╚═══╝╚══════╝
 
- [1]  Ping Scan
- [2]  Host Discovery
- [3]  Regular Scan
- [4]  Quick Scan
- [5]  Service & Version Detection
- [6]  OS Detection
- [7]  Aggressive Scan
- [8]  Vulnerability Scan
- [0]  Exit
+                           Network Intelligence Suite
 
-============================================================
-Select a scan type: 2
 
-Enter target IP / subnet / range: 192.168.1.0/24
+AVAILABLE SCANNING MODULES
+------------------------------------------------------------
 
-[*] Running Host Discovery on 192.168.1.0/24 ...
+[1] Ping Scan               |  [2] Service Detection
+[3] OS Detection            |  [4] Vulnerability Scan
+[5] Aggressive Scan         |  [6] SYN Stealth Scan
+[7] Web Tech Scan           |  [8] UDP Port Scan
+[9] Fast Triage Scan        |
 
-Starting Nmap 7.94 ...
-Nmap scan report for 192.168.1.1
-Host is up (0.0023s latency).
-...
-============================================================
-Scan complete. Select another scan or [0] to exit.
+------------------------------------------------------------
+
+[10] Exit Framework
+
+------------------------------------------------------------
+
+nmap-engine > Select a module [1-10]: 2
+
+Target > scanme.nmap.org
+
+[*] Starting Service Detection Scan...
+[*] Command: nmap -sV scanme.nmap.org
+
+PORT      STATE SERVICE VERSION
+22/tcp    open  ssh     OpenSSH
+80/tcp    open  http    Apache httpd
+
+Service Info:
+- SSH detected on port 22
+- HTTP detected on port 80
+
+[✓] Scan completed successfully.
+
+nmap-engine > Press ENTER to return to menu...
 ```
 
 ---
@@ -142,11 +162,30 @@ python nmapengine.py
 
 ```
 NmapEngine/
-├── nmapengine.py       # Main entry point & menu engine
-├── scans.py            # Predefined scan profile definitions
-├── utils.py            # Helper functions (input validation, output formatting)
-├── requirements.txt    # Python dependencies
-└── README.md           # Project documentation
+│
+├── main.py                    # Application entry point
+├── LICENSE
+├── README.md
+│
+├── core/
+│   ├── __init__.py
+│   └── base_scanner.py        # Base scanner class & shared logic
+│
+├── scans/
+│   ├── __init__.py
+│   ├── aggressive_scan.py     # Aggressive scan (-A)
+│   ├── fast_scan.py           # Fast scan (-F)
+│   ├── os_detection.py        # OS detection (-O)
+│   ├── ping_scan.py           # Host discovery
+│   ├── service_detection.py   # Service/version detection (-sV)
+│   ├── syn_stealth_scan.py    # SYN stealth scan (-sS)
+│   ├── udp_scan.py            # UDP scan (-sU)
+│   ├── vuln_scanner.py        # NSE vulnerability scans
+│   └── web_tech_scan.py       # Web enumeration & HTTP NSE scripts
+│
+└── utils/
+    ├── __init__.py
+    └── ui.py                  # Banner, colors, menus, output formatting
 ```
 
 ---
