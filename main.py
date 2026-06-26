@@ -1,6 +1,8 @@
 from scans import REGISTRY as SCANNERS
 from utils.ui import banner, print_menu
 from colorama import Fore, Style
+from utils.logs_config import get_logger
+logger = get_logger()
 
 
 def get_choice():
@@ -34,19 +36,23 @@ def main():
 
         if choice == len(SCANNERS) + 1:
             print(Fore.RED, "\n [+] Exiting toolkit framework gracefully. Goodbye.\n", Style.RESET_ALL)
+            logger.info("Exiting NmapEngine framework gracefully.")
             break
 
         scanner = SCANNERS[choice - 1]
         target = input(f" nmap-engine > Target IP / Domain: ").strip()
 
         print(Fore.LIGHTMAGENTA_EX, f"\n[*] Running {scanner.name} against '{target}'...\n", Style.RESET_ALL)
+        logger.info(f"Running {scanner.name} against '{target}'...")
         output = scanner.run(target)
 
         if output:
             print(Fore.GREEN, "[+] SCAN COMPLETE - RESULTS RETURNED ↴\n", Style.RESET_ALL)
+            logger.info("Scan Completed")
             print(output)
         else:
             print(Fore.RED, "[-] SCAN TERMINATED: No data received or execution failed.", Style.RESET_ALL)
+            logger.error("SCAN TERMINATED: No data received or execution failed")
             print("     (Check system log for debug metrics)")
 
 
